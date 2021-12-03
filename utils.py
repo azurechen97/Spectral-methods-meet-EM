@@ -122,7 +122,8 @@ def transform_data(data):
     X = np.array(data)
     rows, _ = X.shape
     n, m, k = np.max(np.array(data), axis=0)
-    labels = np.zeros((m, n), dtype=np.int64)
+    # if the worker didn't label an item, then the label is written as -1
+    labels = np.zeros((m, n), dtype=np.int64)-1
     for r in range(rows):
         labels[X[r, 1]-1, X[r, 0]-1] = X[r, 2]-1
     return labels
