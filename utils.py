@@ -83,9 +83,11 @@ def robust_tensor_power(T, L=20, N=100, sym=True):
     return values, vectors
 
 # get the estimated confusion matrix
-def get_confusion_matrix(k, labels, groups=None, sym=True, L=20, N=100, seed=0):
+
+
+def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=100, seed=0):
     m, n = labels.shape
-    if not groups:
+    if groups is None:
         np.random.seed(seed)
         groups = np.random.randint(3, size=m)
     Zg = get_Zg(k, labels, groups)
@@ -98,10 +100,10 @@ def get_confusion_matrix(k, labels, groups=None, sym=True, L=20, N=100, seed=0):
         values, vectors = robust_tensor_power(M3_whiten, L, N, sym)
         w = values**-2
         mu = np.linalg.inv(Q.T)@vectors@np.diag(values)
-        best = np.argmax(mu, axis=1)
+        best = np.argmax(mu, axis=0)
         for h in range(k):
-            Cc[g, :, h] = mu[:, best[h]]
-            W[g, h, h] = w[h]
+            Cc[g, :, best[h]] = mu[:, h]
+            W[g, best[h], best[h]] = w[h]
     W = np.mean(W, axis=0)
     C = np.zeros((m, k, k))
     for i in range(m):
@@ -109,14 +111,17 @@ def get_confusion_matrix(k, labels, groups=None, sym=True, L=20, N=100, seed=0):
         Za = (np.sum(Zg, axis=0)-Zg[groups[i], :, :])/2
         E = np.zeros((k, k))
         for j in range(n):
-            E[labels[i, j], :] += Za[j, :]
-        E /= N
+            if labels[i, j] != -1:
+                E[labels[i, j], :] += Za[j, :]
+        E /= n
         Ci = E@np.linalg.inv(W@Ca.T)
-        colsums = np.sum(Ci,axis=0)
-        Ci /= colsums[np.newaxis,:]
+        if cutoff:
+            Ci[Ci < cutoff] = cutoff
+        colsums = np.sum(Ci, axis=0)
+        Ci /= colsums[np.newaxis, :]
         C[i, :, :] = Ci
     return C
-
+    
 # transform the data table into a mxn label matrix
 def transform_data(data):
     X = np.array(data, dtype=np.int64)
