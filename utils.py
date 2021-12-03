@@ -112,7 +112,17 @@ def get_confusion_matrix(k, labels, groups=None, sym=True, L=20, N=100, seed=0):
             E[labels[i, j], :] += Za[j, :]
         E /= N
         Ci = E@np.linalg.inv(W@Ca.T)
-        for l in range(k):
-            Ci[:, l] /= np.linalg.norm(Ci[:, l])
+        colsums = np.sum(Ci,axis=0)
+        Ci /= colsums[np.newaxis,:]
         C[i, :, :] = Ci
     return C
+
+# transform the data table into a mxn label matrix
+def transform_data(data):
+    X = np.array(data)
+    rows, _ = X.shape
+    n, m, k = np.max(np.array(data), axis=0)
+    labels = np.zeros((m, n), dtype=np.int64)
+    for r in range(rows):
+        labels[X[r, 1]-1, X[r, 0]-1] = X[r, 2]-1
+    return labels
