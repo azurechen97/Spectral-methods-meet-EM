@@ -127,3 +127,8 @@ def transform_data(data):
     for r in range(rows):
         labels[X[r, 1]-1, X[r, 0]-1] = X[r, 2]-1
     return labels
+
+def errorRate(pred_q, truth):
+    pred_label = np.argmax(pred_q, axis=1)
+    y = truth[:,1] - 1
+    return np.mean(pred_label != y)
