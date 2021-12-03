@@ -4,6 +4,8 @@ literature review
 - Paper: [Spectral method meet EM](https://www.jmlr.org/papers/volume17/14-511/14-511.pdf)
 - [data and matlab implement by author](https://github.com/zhangyuc/SpectralMethodsMeetEM)
 - team member: Aoxue Chen, Song Liang
+- Other references:
+    - [Tensor decompositions for learning latent variable models](https://www.jmlr.org/papers/volume15/anandkumar14b/anandkumar14b.pdf)
 
 Interesting problems that raise along with our implementation:
 
