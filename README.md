@@ -5,7 +5,7 @@ literature review
 - [data and matlab implement by author](https://github.com/zhangyuc/SpectralMethodsMeetEM)
 - team member: Aoxue Chen, Song Liang
 
-Interesting problems that raise along with implementation:
+Interesting problems that raise along with our implementation:
 
 1. M2是不是对称矩阵有没有影响？
 2. 拟合的confusion matrix是负数的话需不需要在0处截断
