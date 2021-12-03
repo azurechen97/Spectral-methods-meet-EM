@@ -13,7 +13,8 @@ init_mu = get_confusion_matrix(k=2, labels=df)
 # print(init_mu)
 
 EM_optimizor = spectralEM(init_mu=init_mu, labels=df)
-EM_optimizor.run(strategy='max_iter', max_iter=10)
+logLik = EM_optimizor.run(strategy='converge', delta=1e-2)
+print(logLik)
 # print(EM_optimizor.output_mu())
 # print(EM_optimizor.output_q())
 
