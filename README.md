@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Topic in Data Science: Spectral Method and Nonconvex optimization
 
 literature review
@@ -7,7 +8,8 @@ literature review
 
 Interesting problems that raise along with our implementation:
 
-1. M2是不是对称矩阵有没有影响？
-2. 拟合的confusion matrix是负数的话需不需要在0处截断
-2. 其他特例
-4. 在有人没给很多物品打标的情况下效果不是很好
+- [ ] M2是不是对称矩阵有没有影响？
+- [ ] 拟合的confusion matrix是负数的话需不需要在0处截断
+- [ ] 其他特例
+- [x] 在有人没给很多物品打标的情况下效果不是很好（已解决）
+
