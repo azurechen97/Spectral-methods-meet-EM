@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-Topic in Data Science: Spectral Method and Nonconvex optimization
+**Topic in Data Science: Spectral Method and Nonconvex optimization**
 
 literature review
 - Paper: [Spectral method meet EM](https://www.jmlr.org/papers/volume17/14-511/14-511.pdf)
