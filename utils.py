@@ -1,4 +1,6 @@
 import numpy as np
+from sklearn.metrics import confusion_matrix
+import pandas as pd
 
 # k: number of classes
 # labels: a mxn matrix, labels of n items by m workers
@@ -137,3 +139,25 @@ def errorRate(pred_q, truth):
     pred_label = np.argmax(pred_q, axis=1)
     y = truth[:,1] - 1
     return np.mean(pred_label != y)
+
+# get the true confusion matrix
+def get_true_confusion_matrix(data, truth, normalize=True):
+    truth = truth.drop_duplicates()
+    n, m, k = np.max(np.array(data), axis=0)
+    C = np.zeros((m, k, k))
+    for i in range(m):
+        truth_new = truth[truth[0].isin(data[data[1] == i+1][0])]
+        pred_new = data[data[1] == i +
+                        1][data[data[1] == i+1][0].isin(truth_new[0])]
+        Ci = confusion_matrix(pred_new[2], truth_new[1], labels=[
+                              i+1 for i in range(k)])
+        if normalize:
+            Ci = Ci.astype(float)
+            colsums = np.sum(Ci, axis=0)
+            Ci[:, colsums != 0] /= colsums[np.newaxis, colsums != 0]
+        C[i, :, :] = Ci
+    return C
+
+# the mse of estimated confusion matrix
+def confusion_matrix_loss(C_estimated, C_true):
+    return np.mean((C_estimated-C_true)**2)
