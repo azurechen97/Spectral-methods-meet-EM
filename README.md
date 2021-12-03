@@ -9,8 +9,8 @@ literature review
 
 Interesting problems that raise along with our implementation:
 
-- [ ] M2是不是对称矩阵有没有影响？
-- [ ] 拟合的confusion matrix是负数的话需不需要在0处截断
+- [ ] $M_2$和$M_3$是不是对称张量有没有影响？（已在函数中整合是否寻找临近对称张量的参数`sym`）
+- [ ] 拟合的confusion matrix是负数的话需不需要在0处截断（已在函数中整合截断选择参数`cutoff`）
 - [ ] 其他特例
 - [x] 在有人没给很多物品打标的情况下效果不是很好（已解决）
 
