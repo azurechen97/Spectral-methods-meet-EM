@@ -119,9 +119,9 @@ def get_confusion_matrix(k, labels, groups=None, sym=True, L=20, N=100, seed=0):
 
 # transform the data table into a mxn label matrix
 def transform_data(data):
-    X = np.array(data)
+    X = np.array(data, dtype=np.int64)
     rows, _ = X.shape
-    n, m, k = np.max(np.array(data), axis=0)
+    n, m, k = map(int, np.max(np.array(data), axis=0))
     # if the worker didn't label an item, then the label is written as -1
     labels = np.zeros((m, n), dtype=np.int64)-1
     for r in range(rows):

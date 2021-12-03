@@ -1,17 +1,19 @@
 import numpy as np
 
 class spectralEM:
-    def __init__(self, init_mu, labels, num_item, num_worker, num_category, max_iter=10):
+    def __init__(self, init_mu, labels, max_iter=10):
         self.mu = init_mu
-        self.N = num_item
-        self.M = num_worker
-        self.K = num_category
+        self.M, self.N = labels.shape
+        self.K = np.max(labels)+1
+        # self.N = num_item
+        # self.M = num_worker
+        # self.K = num_category
         self.max_iter = max_iter
         self.q = np.ones((self.N, self.K)) / self.K
         self.labels = labels
 
     def E_step(self):
-        log_mu = np.log(self.mu)
+        log_mu = np.log(np.clip(self.mu, 1e-6, 10))
         I, J = self.labels.shape
         for j in range(J):
             for i in range(I):
