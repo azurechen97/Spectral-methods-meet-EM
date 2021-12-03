@@ -17,4 +17,5 @@ Interesting problems that raise along with our implementation:
 - [ ] 缺失数据的量、数据规模、类别数量等因素对算法是否有影响
 - [x] 使用张量操作代替循环以提高算法性能（已完成）
 - [x] 在有人没给很多物品打标的情况下效果不是很好（已解决）
-
+- [ ] Singular matrix报错
+- [ ] 根本没打标的人如何处理（可能是上一点的原因）
