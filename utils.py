@@ -87,10 +87,11 @@ def robust_tensor_power(T, L=20, N=100, sym=True):
 # get the estimated confusion matrix
 
 
-def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=100, seed=0):
+def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=100, seed=None):
     m, n = labels.shape
     if groups is None:
-        np.random.seed(seed)
+        if seed is not None:
+            np.random.seed(seed)
         groups = np.random.randint(3, size=m)
     Zg = get_Zg(k, labels, groups)
     M2s, M3s = get_M(Zg)
