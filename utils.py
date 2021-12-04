@@ -120,19 +120,18 @@ def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=
                 W[g, l] = w[loc[chosen]]
                 not_used_loc = np.append(not_used_loc, np.delete(loc, chosen))
 
-        for l in not_in_best:
-            chosen = np.random.randint(len(not_used_loc))
-            Cc[g, :, l] = mu[:, not_used_loc[chosen]].ravel()
-            W[g, l] = w[not_used_loc[chosen]]
-            not_used_loc = np.delete(not_used_loc, chosen)
+        not_used_loc = np.random.permutation(not_used_loc)
+        for i, l in enumerate(not_in_best):
+            Cc[g, :, l] = mu[:, not_used_loc[i]].ravel()
+            W[g, l] = w[not_used_loc[i]]
 
         # the method in original code
         # for h in range(k):
         #     l = best[h]
         #     if W[g, l] != 0:
-        #         l = np.where(W[g,:] == 0)[0][0]
-        #     Cc[g,:,l] = mu[:, best[h]].ravel()
-        #     W[g,l] = w[best[h]]
+        #         l = np.where(W[g, :] == 0)[0][0]
+        #     Cc[g, :, l] = mu[:, h].ravel()
+        #     W[g, l] = w[h]
 
     W = np.mean(W, axis=0)
     C = np.zeros((m, k, k))
@@ -171,13 +170,12 @@ def errorRate(pred_q, truth):
 # get the true confusion matrix
 def get_true_confusion_matrix(data, truth, normalize=True):
     truth = truth.drop_duplicates()
+    merged = data.merge(truth, on=0)
     n, m, k = np.max(np.array(data), axis=0)
     C = np.zeros((m, k, k))
     for i in range(m):
-        truth_new = truth[truth[0].isin(data[data[1] == i+1][0])]
-        pred_new = data[data[1] == i +
-                        1][data[data[1] == i+1][0].isin(truth_new[0])]
-        Ci = confusion_matrix(truth_new[1], pred_new[2], labels=[
+        merged_i = merged[merged["1_x"] == i+1]
+        Ci = confusion_matrix(merged_i["1_y"], merged_i[2], labels=[
                               i+1 for i in range(k)]).T
         if normalize:
             Ci = Ci.astype(float)

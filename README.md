@@ -21,5 +21,5 @@ Interesting problems that raise along with our implementation:
     - 原因：有的C_c某列全是0
         - 原因：set the lth column of Cc by some mu_h whose l-th coordinate has the greatest component
         - 原论文解决方式：随机选择（不可行，两列一样照样是singular）
-        - 原代码解决方式：直接找到下一个空位填进去(web,sym=False, seed=123,error=0.12060654824537223)
-        - 改进：从没被选择的mu里选择(web,sym=False, seed=123, error=0.09737838398902877)
+        - 原代码解决方式：如果重合直接找到第一个空位填进去(web,sym=False, seed=123,error=0.06429319659831827)，优点：快速，不用随机数，缺点：不稳定，如[4,4,0,1,2]会把012都挤到下一格
+        - 改进：从没被选择的mu里选择(web,sym=False, seed=123, error=0.0830290549282322)
