@@ -85,18 +85,19 @@ def robust_tensor_power(T, L=20, N=100, sym=True):
     return values, vectors
 
 # get the estimated confusion matrix
+# note that each column corresponds a true label, which is different from scikit-learn
 
 
 def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=100, seed=None):
     m, n = labels.shape
+    if seed is not None:
+        np.random.seed(seed)
     if groups is None:
-        if seed is not None:
-            np.random.seed(seed)
         groups = np.random.randint(3, size=m)
     Zg = get_Zg(k, labels, groups)
     M2s, M3s = get_M(Zg)
     Cc = np.zeros((3, k, k))
-    W = np.zeros((3, k, k))
+    W = np.zeros((3, k))
     for g, (M2, M3) in enumerate(zip(M2s, M3s)):
         Q = get_whiten(M2, sym)
         M3_whiten = whiten_tensor(M3, Q)
@@ -104,9 +105,22 @@ def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=
         w = values**-2
         mu = np.linalg.inv(Q.T)@vectors@np.diag(values)
         best = np.argmax(mu, axis=0)
-        for h in range(k):
-            Cc[g, :, best[h]] = mu[:, h]
-            W[g, best[h], best[h]] = w[h]
+
+        # prevent multiple mu in same column
+        for l in range(k):
+            loc = np.where(best == l)[0]
+            if len(loc) == 1:
+                Cc[g, :, l] = mu[:, loc].ravel()
+                W[g, l] = w[loc]
+            elif len(loc) == 0:
+                loc = np.random.randint(k)
+                Cc[g, :, l] = mu[:, loc].ravel()
+                W[g, l] = w[loc]
+            else:
+                loc = np.random.choice(loc, 1)
+                Cc[g, :, l] = mu[:, loc].ravel()
+                W[g, l] = w[loc]
+
     W = np.mean(W, axis=0)
     C = np.zeros((m, k, k))
     for i in range(m):
@@ -117,7 +131,7 @@ def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=
             if labels[i, j] != -1:
                 E[labels[i, j], :] += Za[j, :]
         E /= n
-        Ci = E@np.linalg.inv(W@Ca.T)
+        Ci = E@np.linalg.inv(W[np.newaxis, :]*Ca.T)
         if cutoff:
             Ci[Ci < cutoff] = cutoff
         colsums = np.sum(Ci, axis=0)
@@ -150,8 +164,8 @@ def get_true_confusion_matrix(data, truth, normalize=True):
         truth_new = truth[truth[0].isin(data[data[1] == i+1][0])]
         pred_new = data[data[1] == i +
                         1][data[data[1] == i+1][0].isin(truth_new[0])]
-        Ci = confusion_matrix(pred_new[2], truth_new[1], labels=[
-                              i+1 for i in range(k)])
+        Ci = confusion_matrix(truth_new[1], pred_new[2], labels=[
+                              i+1 for i in range(k)]).T
         if normalize:
             Ci = Ci.astype(float)
             colsums = np.sum(Ci, axis=0)
