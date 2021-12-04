@@ -86,8 +86,6 @@ def robust_tensor_power(T, L=20, N=100, sym=True):
 
 # get the estimated confusion matrix
 # note that each column corresponds a true label, which is different from scikit-learn
-
-
 def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=100, seed=None):
     m, n = labels.shape
     if seed is not None:
@@ -107,19 +105,34 @@ def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=
         best = np.argmax(mu, axis=0)
 
         # prevent multiple mu in same column
+        not_in_best = []
+        not_used_loc = np.array([], dtype=np.int64)
         for l in range(k):
             loc = np.where(best == l)[0]
             if len(loc) == 1:
                 Cc[g, :, l] = mu[:, loc].ravel()
                 W[g, l] = w[loc]
             elif len(loc) == 0:
-                loc = np.random.randint(k)
-                Cc[g, :, l] = mu[:, loc].ravel()
-                W[g, l] = w[loc]
+                not_in_best.append(l)
             else:
-                loc = np.random.choice(loc, 1)
-                Cc[g, :, l] = mu[:, loc].ravel()
-                W[g, l] = w[loc]
+                chosen = np.random.randint(len(loc))
+                Cc[g, :, l] = mu[:, loc[chosen]].ravel()
+                W[g, l] = w[loc[chosen]]
+                not_used_loc = np.append(not_used_loc, np.delete(loc, chosen))
+
+        for l in not_in_best:
+            chosen = np.random.randint(len(not_used_loc))
+            Cc[g, :, l] = mu[:, not_used_loc[chosen]].ravel()
+            W[g, l] = w[not_used_loc[chosen]]
+            not_used_loc = np.delete(not_used_loc, chosen)
+
+        # the method in original code
+        # for h in range(k):
+        #     l = best[h]
+        #     if W[g, l] != 0:
+        #         l = np.where(W[g,:] == 0)[0][0]
+        #     Cc[g,:,l] = mu[:, best[h]].ravel()
+        #     W[g,l] = w[best[h]]
 
     W = np.mean(W, axis=0)
     C = np.zeros((m, k, k))

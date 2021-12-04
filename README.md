@@ -20,5 +20,6 @@ Interesting problems that raise along with our implementation:
 - [x] Singular matrix报错
     - 原因：有的C_c某列全是0
         - 原因：set the lth column of Cc by some mu_h whose l-th coordinate has the greatest component
-        - 原代码解决方式：直接找到下一个空位填进去
-        - 其他解决方式：按照论文，随机选择
+        - 原论文解决方式：随机选择（不可行，两列一样照样是singular）
+        - 原代码解决方式：直接找到下一个空位填进去(web,sym=False, seed=123,error=0.12060654824537223)
+        - 改进：从没被选择的mu里选择(web,sym=False, seed=123, error=0.09737838398902877)
