@@ -35,21 +35,36 @@ class spectralEM:
                     self.mu[i, l, c] = np.sum(self.q[:, l] * (self.labels[i, :] == c))
                 self.mu[i, l, :] = self.mu[i, l, :] / np.sum(self.mu[i, l, :])
 
-    def run(self, strategy='max_iter', max_iter=10, delta=1e-6):
+    def loglik(self):
+        self.loglikelihood = 0
+        log_mu = np.log(np.clip(self.mu, 1e-6, 10))
+        I, J = self.labels.shape
+        for j in range(J):
+            for l in range(self.K):
+                inter = 0
+                for i in range(I):
+                    label = self.labels[i, j]
+                    if label != -1:
+                        inter += log_mu[i, l, label]
+                inter = inter * self.q[j, l]
+                self.loglikelihood += inter
+        return self.loglikelihood
+
+    def run(self, strategy='max_iter', max_iter=10, delta=1e-2):
         self.E_step()
         d = 1
-        mu0 = self.mu.copy()
         num_iter = 0
+        logLik = [self.loglik()]
         while (strategy=='max_iter' and num_iter < max_iter) or (strategy=='converge' and d > delta):
             self.M_step()
             self.E_step()
+            logLik.append(self.loglik())
             num_iter += 1
-            if strategy == 'converge' :
-                mu = self.mu.copy()
-                d = np.sum(np.abs(mu - mu0)) / self.N
-                mu0 = mu
+            if strategy == 'converge':
+                d = np.abs(np.diff(logLik[-2:])[0])
 
         print('# iterations = ', num_iter)
+        return logLik
 
 
     def output_mu(self):
