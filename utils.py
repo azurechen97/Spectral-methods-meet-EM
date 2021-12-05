@@ -86,7 +86,7 @@ def robust_tensor_power(T, L=20, N=100, sym=True):
 
 # get the estimated confusion matrix
 # note that each column corresponds a true label, which is different from scikit-learn
-def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=20, N=100, seed=None):
+def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=50, N=10, seed=None):
     m, n = labels.shape
     if seed is not None:
         np.random.seed(seed)
