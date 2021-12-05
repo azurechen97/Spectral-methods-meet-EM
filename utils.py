@@ -181,6 +181,7 @@ def get_true_confusion_matrix(data, truth, normalize=True):
             Ci = Ci.astype(float)
             colsums = np.sum(Ci, axis=0)
             Ci[:, colsums != 0] /= colsums[np.newaxis, colsums != 0]
+            Ci[:, colsums == 0] = 1./k
         C[i, :, :] = Ci
     return C
 
