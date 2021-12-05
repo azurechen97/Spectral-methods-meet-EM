@@ -8,10 +8,13 @@ class Generator:
         self.alpha = alpha
         self.beta = beta
 
-    def confusionMatrix(self, anomaly_prop=0.05,
-               true_prob=np.array([0.3, 0.9]),
-               false_prob=np.array([0.0, 0.5])):
-        abnormal = int(self.num_worker * anomaly_prop)
+    def confusionMatrix(self, true_prob=np.array([0.3, 0.9]),
+                        false_prob=np.array([0.0, 0.5]),
+                        all_same_prop=0.02,
+                        all_false_prop=0.02):
+        num_all_same = int(self.num_worker * all_same_prop)
+        num_all_false = int(self.num_worker * all_false_prop)
+        num_normal = self.num_worker - num_all_same - num_all_false
         def normal_worker(num, num_category):
             CM = np.random.rand(num, num_category, num_category)
             CM = CM * (false_prob[1]-false_prob[0]) + false_prob[0]
@@ -21,7 +24,7 @@ class Generator:
 
         def all_same_worker(num, num_category):
             if num < 2:
-                num = 2
+                return np.array([]).reshape(-1, num_category, num_category)
             CM = np.zeros((num, num_category, num_category))
             random_label = np.random.randint(0, num_category, num)
             for i, k in enumerate(random_label):
@@ -30,25 +33,27 @@ class Generator:
 
         def all_false_worker(num, num_category):
             if num < 2:
-                num = 2
+                return np.array([]).reshape(-1, num_category, num_category)
             CM = np.random.rand(num, num_category, num_category)
             CM = CM * (false_prob[1] - false_prob[0]) + false_prob[0]
             [np.fill_diagonal(m, 0) for m in CM]
             CM = np.array([m / np.sum(m, axis=1).reshape(-1, 1) for m in CM])
             return CM
 
-        worker1 = normal_worker(self.num_worker-abnormal, self.num_category)
-        worker2 = all_same_worker(abnormal, self.num_category)
-        worker3 = all_false_worker(abnormal, self.num_category)
+        worker1 = normal_worker(num_normal, self.num_category)
+        worker2 = all_same_worker(num_all_same, self.num_category)
+        worker3 = all_false_worker(num_all_false, self.num_category)
 
         return np.concatenate((worker1, worker2, worker3))
 
     def generate_item_label(self, prob=None):
         if prob is None:
             prob = np.array([0.5, 0.5])
+        elif isinstance(prob, float):
+            prob = np.array([prob, 1-prob])
         if len(prob) != self.num_category:
             raise ValueError('length of probability list should equal to number of category')
-        label = np.random.choice(self.num_category, size=self.num_item, replace=True, p=prob)
+        label = np.random.choice(np.arange(1, self.num_category+1), size=self.num_item, replace=True, p=prob)
         item = np.arange(1, self.num_item+1)
         self.truth = np.stack((item, label), axis=1)
         return self.truth
