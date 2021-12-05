@@ -1,5 +1,4 @@
 import numpy as np
-
 from utils import transform_data, get_confusion_matrix, errorRate
 from EMfunctions import spectralEM
 
