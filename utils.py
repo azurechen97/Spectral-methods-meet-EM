@@ -86,7 +86,7 @@ def robust_tensor_power(T, L=20, N=100, sym=True):
 
 # get the estimated confusion matrix
 # note that each column corresponds a true label, which is different from scikit-learn
-def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=50, N=10, seed=None):
+def get_confusion_matrix(k, labels, groups=None, sym=True, method = 0, cutoff=1e-7, L=50, N=10, seed=None):
     m, n = labels.shape
     if seed is not None:
         np.random.seed(seed)
@@ -104,34 +104,34 @@ def get_confusion_matrix(k, labels, groups=None, sym=True, cutoff=1e-7, L=50, N=
         mu = np.linalg.inv(Q.T)@vectors@np.diag(values)
         best = np.argmax(mu, axis=0)
 
-        # prevent multiple mu in same column
-        not_in_best = []
-        not_used_loc = np.array([], dtype=np.int64)
-        for l in range(k):
-            loc = np.where(best == l)[0]
-            if len(loc) == 1:
-                Cc[g, :, l] = mu[:, loc].ravel()
-                W[g, l] = w[loc]
-            elif len(loc) == 0:
-                not_in_best.append(l)
-            else:
-                chosen = np.random.randint(len(loc))
-                Cc[g, :, l] = mu[:, loc[chosen]].ravel()
-                W[g, l] = w[loc[chosen]]
-                not_used_loc = np.append(not_used_loc, np.delete(loc, chosen))
-
-        not_used_loc = np.random.permutation(not_used_loc)
-        for i, l in enumerate(not_in_best):
-            Cc[g, :, l] = mu[:, not_used_loc[i]].ravel()
-            W[g, l] = w[not_used_loc[i]]
-
         # the method in original code
-        # for h in range(k):
-        #     l = best[h]
-        #     if W[g, l] != 0:
-        #         l = np.where(W[g, :] == 0)[0][0]
-        #     Cc[g, :, l] = mu[:, h].ravel()
-        #     W[g, l] = w[h]
+        if method == 0:
+            for h in range(k):
+                l = best[h]
+                if W[g, l] != 0:
+                    l = np.where(W[g, :] == 0)[0][0]
+                Cc[g, :, l] = mu[:, h].ravel()
+                W[g, l] = w[h]
+        # prevent multiple mu in same column
+        else:
+            not_in_best = []
+            not_used_loc = np.array([], dtype=np.int64)
+            for l in range(k):
+                loc = np.where(best == l)[0]
+                if len(loc) == 1:
+                    Cc[g, :, l] = mu[:, loc].ravel()
+                    W[g, l] = w[loc]
+                elif len(loc) == 0:
+                    not_in_best.append(l)
+                else:
+                    chosen = np.random.randint(len(loc))
+                    Cc[g, :, l] = mu[:, loc[chosen]].ravel()
+                    W[g, l] = w[loc[chosen]]
+                    not_used_loc = np.append(not_used_loc, np.delete(loc, chosen))
+            not_used_loc = np.random.permutation(not_used_loc)
+            for i, l in enumerate(not_in_best):
+                Cc[g, :, l] = mu[:, not_used_loc[i]].ravel()
+                W[g, l] = w[not_used_loc[i]]
 
     W = np.mean(W, axis=0)
     C = np.zeros((m, k, k))
