@@ -1,0 +1,6 @@
+filename,Opt-D&S(1st),Opt-D&S(10st),MV-D&S(1st),MV-D&S(10st),Majority Vote,KOS,Ghosh-SVD,EigenRatio
+prob=0.1_crowd.txt,0,0,0.11,0,0.00149999999999995,0.205,0,0
+prob=0.2_crowd.txt,0,0,0.015,0,0,0.05,0.001,0
+prob=0.3_crowd.txt,0,0,0.002,0,0.001,0.005,0,0
+prob=0.4_crowd.txt,0,0,0,0,0.001,0.002,0,0
+prob=0.5_crowd.txt,0,0,0,0,0.000499999999999945,0,0,0

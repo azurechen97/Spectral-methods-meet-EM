@@ -1,0 +1,19 @@
+filename,Opt-D&S(1st),Opt-D&S(10st),MV-D&S(1st),MV-D&S(10st),Majority Vote,KOS,Ghosh-SVD,EigenRatio
+alpha=0.2_beta=0.2_crowd.txt,0,0,0,0,0.001,0,0,0.489
+alpha=0.5_beta=0.5_crowd.txt,0,0,0,0,0.000499999999999945,0,0,0.502
+alpha=0.8_beta=0.8_crowd.txt,0,0,0,0,0.001,0,0,0
+alpha=1_beta=5_crowd.txt,0,0,0,0,0.001,0,0,0
+alpha=1_beta=7_crowd.txt,0,0,0,0,0.002,0.001,0,0
+alpha=1_beta=9_crowd.txt,0,0,0,0,0.003,0,0,0
+alpha=2_beta=2_crowd.txt,0,0,0,0,0.004,0,0.001,0
+alpha=2_beta=5_crowd.txt,0,0,0,0,0,0,0.001,0.001
+alpha=2_beta=7_crowd.txt,0,0,0,0,0.001,0,0,0
+alpha=2_beta=9_crowd.txt,0,0,0,0,0.00149999999999995,0,0,0
+alpha=4_beta=4_crowd.txt,0,0,0,0,0.000499999999999945,0,0,0
+alpha=5_beta=1_crowd.txt,0,0,0,0,0.002,0,0,0
+alpha=5_beta=2_crowd.txt,0,0,0,0,0.00149999999999995,0,0,0
+alpha=6_beta=6_crowd.txt,0,0,0,0,0.003,0,0,0
+alpha=7_beta=1_crowd.txt,0,0,0,0,0.002,0,0,0
+alpha=7_beta=2_crowd.txt,0,0,0,0,0.003,0.001,0.001,0
+alpha=9_beta=1_crowd.txt,0,0,0,0,0.00149999999999995,0,0,0
+alpha=9_beta=2_crowd.txt,0,0,0,0,0,0,0,0

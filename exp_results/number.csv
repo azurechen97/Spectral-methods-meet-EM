@@ -1,0 +1,10 @@
+filename,Opt-D&S(1st),Opt-D&S(10st),MV-D&S(1st),MV-D&S(10st),Majority Vote,KOS,Ghosh-SVD,EigenRatio
+M=1000_N=1000_crowd.txt,0,0,0,0,0,0,0,0
+M=100_N=1000_crowd.txt,0,0,0,0,0,0,0,0
+M=100_N=100_crowd.txt,0,0,0,0,0,0,0,0
+M=100_N=1500_crowd.txt,0,0,0,0,0.0063333333333333,0,0.002,0
+M=100_N=500_crowd.txt,0,0,0,0,0,0,0,0
+M=100_N=50_crowd.txt,0,0,0,0,0,0,0,0.46
+M=10_N=1000_crowd.txt,0.082,0.075,0.087,0.075,0.112,0.135,0.129,0.091
+M=1500_N=1000_crowd.txt,0,0,0,0,0,0,0,0
+M=500_N=1000_crowd.txt,0,0,0,0,0,0,0,0
